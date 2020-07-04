@@ -2,7 +2,7 @@
 
 set -euf -o pipefail
 
-mkdir /cbica/projects/UVMdata/bids/output/2020-06-07
+mkdir -p /cbica/projects/UVMdata/bids/datasets/2020-06-07/hcp_output/ || true
 cd /cbica/projects/UVMdata/bids/datasets/2020-06-07/Nifti
 for x in $(ls | grep ^sub | cut -c 5-)
 do
