@@ -18,10 +18,12 @@ def infotodict(seqinfo):
     subindex: sub index within group
     """
 
-    t1w = create_key('sub-{subject}/ses-001/anat/sub-{subject}_ses-001_run-{item:03d}_T1w')
-    t2w = create_key('sub-{subject}/ses-001/anat/sub-{subject}_ses-001_run-{item:03d}_T2w')
-    # t2star = create_key('sub-{subject}/ses-001/anat/sub-{subject}_ses-001_run-{item:03d}_T2star')
-    info = {t1w: [], t2w: []}#, t2star: []}
+    t1w = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_run-{item:03d}_T1w')
+    t2w = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_run-{item:03d}_T2w')
+    t2star = create_key('sub-{subject}/{session}/anat/sub-{subject}_{session}_run-{item:03d}_T2star')
+    fmap_mag = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_run-{item:03d}_magnitude')
+    fmap_phase = create_key('sub-{subject}/{session}/fmap/sub-{subject}_{session}_run-{item:03d}_phasediff')
+    info = {t1w: [], t2w: [], t2star: [], fmap_mag: [], fmap_phase: []}
 
     i = 0
     for s in seqinfo:
@@ -54,9 +56,14 @@ def infotodict(seqinfo):
             info[t1w].append(s.series_id)
         elif '3D_T2_FLAIR_BrainView' in s.protocol_name:
             info[t2w].append(s.series_id)
-        # elif '3D_T2STAR_segEPI' in s.protocol_name:
-        #     info[t2star].append(s.series_id)
-        print(i, s.protocol_name, s.dcm_dir_name, sep=',')
+        elif 'WIP 3D_T2STAR_segEPI' in s.protocol_name:
+            if 'PHASE MAP' in s.image_type:
+                info[t2star].append(s.series_id)
+            # elif 'MAGNITUDE' in s.image_type:
+            #     info[fmap_mag].append(s.series_id)
+            # else:
+            #     info[t2star].append(s.series_id)
+        print(i, s.protocol_name, s.dcm_dir_name, s.example_dcm_file, s.image_type, s.dim1, s.dim2, s.dim3, s.dim4, s.TR, s.TE, sep=',')
         i += 1
         
     return info
