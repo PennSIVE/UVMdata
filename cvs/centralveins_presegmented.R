@@ -30,7 +30,9 @@ library(pbmcapply) # for working in parallel
 #source("helperfunctions.R") # load necessary helper functions
 
 # Simple CVS detection function:
-centralveins_presegmented=function(lesionmap,veinmap,parallel=F,cores=2){
+centralveins_presegmented=function(lesionmap,veinmap,parallel=F,cores=2,seed=7){
+
+  set.seed(seed)
 
   ###############################################################
   ####### Split confluent lesions for individual analysis #######
