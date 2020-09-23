@@ -43,7 +43,10 @@ getAnisoSmooth=function(im,smooth=.75){
 }
 
 # Simple CVS detection function:
-centralveins_weighted_presegmented=function(lesionmap,veinmap,epi,parallel=F,cores=2){
+centralveins_weighted_presegmented=function(lesionmap,veinmap,epi,parallel=F,cores=2,seed=123){
+
+  set.seed(seed)
+  print(paste("Setting seed to", seed))
 
   ###############################################################
   ####### Get distance to boundary for individual lesions #######

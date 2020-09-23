@@ -46,7 +46,9 @@ source("helperfunctions.R") # load necessary helper functions
 
 # CVS detection function:
 centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
-                      cores=2,skullstripped=F,biascorrected=F,c3d=F){
+                      cores=2,skullstripped=F,biascorrected=F,c3d=F,seed=123){
+  set.seed(seed)
+  print(paste("Setting seed to", seed))
 
   #######################################
   ####### Perform bias correction #######
