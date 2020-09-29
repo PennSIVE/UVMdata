@@ -40,8 +40,8 @@ library(mimosa) # for performing lesion segmentation
 library(ANTsRCore) # for cluster labeling
 library(fslr) # for smoothing and tissue class segmentation
 library(parallel) # for working in parallel
-library(pbmcapply) # for working in parallel
-
+# library(pbmcapply) # for working in parallel
+RNGkind("L'Ecuyer-CMRG")
 source("helperfunctions.R") # load necessary helper functions
 
 # CVS detection function:
@@ -65,17 +65,29 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
   ####################################
   ####### Register flair to T1 #######
   ####################################
-  flair=registration(filename=flair,template.file=t1,typeofTransform="Rigid",
+  flair2t1=registration(filename=flair,template.file=t1,typeofTransform="Rigid",
                      remove.warp=FALSE,outprefix="fun")
-  flair=flair$outfile
+  flair_reg2t1 = antsApplyTransforms(fixed = oro2ants(t1), moving = oro2ants(flair),
+            transformlist = flair2t1$fwdtransforms, interpolator = "welchWindowedSinc")
+  flair = ants2oro(flair_reg2t1)
   writenii(flair, "flair_n4_reg_t1")
+  ################################
+  ###### Register T1 to EPI ######
+  ################################
+  t12epi=registration(filename=t1,template.file=epi,typeofTransform="Rigid",
+                     remove.warp=FALSE,outprefix="fun")
+  t1_reg2epi = antsApplyTransforms(fixed = oro2ants(t1), moving = oro2ants(epi),
+            transformlist = t12epi$fwdtransforms, interpolator = "welchWindowedSinc")
+  t1 = ants2oro(t1_reg2epi)
+  writenii(t1, "t1_n4_reg_epi")
   
   #######################################
   ####### Perform skull stripping #######
   #######################################
   if(skullstripped==F){
     t1=fslbet_robust(t1,correct=F)
-    epi=fslbet_robust(epi,correct=F)
+    # epi=fslbet_robust(epi,correct=F)
+    epi = epi * t1_reg2epi
     flair[t1==0]<-0
     writenii(epi, "epi_brain")
     writenii(t1, "t1_brain")
@@ -126,9 +138,9 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
     epi=regs$image_reg
     frangi=regs$label_reg
   }else{
-    epi=registration(filename=epi,template.file=t1,typeofTransform="Rigid",
-                       remove.warp=FALSE,outprefix="fun")
-    epi=epi$outfile
+    # epi=registration(filename=epi,template.file=t1,typeofTransform="Rigid",
+    #                    remove.warp=FALSE,outprefix="fun")
+    # epi=epi$outfile
     
     frangi=frangifilter(image=epi,mask=probmap>0.3,parallel=parallel,cores=cores,c3d=c3d)
     frangi[frangi<0]<-0
