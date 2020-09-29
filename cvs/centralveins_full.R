@@ -61,6 +61,16 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
     writenii(t1, "t1_n4")
     writenii(flair, "flair_n4")
   }
+
+  #######################################
+  ####### Perform skull stripping #######
+  #######################################
+  if(skullstripped==F){
+    t1=fslbet_robust(t1,correct=F)
+    # epi=fslbet_robust(epi,correct=F)
+    writenii(t1, "t1_brain")
+  }
+  mask=(t1!=0)
   
   ####################################
   ####### Register flair to T1 #######
@@ -71,6 +81,9 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
             transformlist = flair2t1$fwdtransforms, interpolator = "welchWindowedSinc")
   flair = ants2oro(flair_reg2t1)
   writenii(flair, "flair_n4_reg_t1")
+  flair[t1==0]<-0
+  writenii(flair, "flair_brain")
+
   ################################
   ###### Register T1 to EPI ######
   ################################
@@ -80,20 +93,9 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
             transformlist = t12epi$fwdtransforms, interpolator = "welchWindowedSinc")
   t1 = ants2oro(t1_reg2epi)
   writenii(t1, "t1_n4_reg_epi")
-  
-  #######################################
-  ####### Perform skull stripping #######
-  #######################################
-  if(skullstripped==F){
-    t1=fslbet_robust(t1,correct=F)
-    # epi=fslbet_robust(epi,correct=F)
-    epi = epi * t1_reg2epi
-    flair[t1==0]<-0
-    writenii(epi, "epi_brain")
-    writenii(t1, "t1_brain")
-    writenii(flair, "flair_brain")
-  }
-  mask=(t1!=0)
+
+  epi = epi * t1_reg2epi
+  writenii(epi, "epi_brain")
   
   ###########################################
   ####### Perform lesion segmentation #######
