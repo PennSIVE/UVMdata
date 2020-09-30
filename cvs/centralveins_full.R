@@ -71,18 +71,6 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
             transformlist = flair2t1$fwdtransforms, interpolator = "welchWindowedSinc")
   flair = ants2oro(flair_reg2t1)
   writenii(flair, "flair_n4_reg_t1")
-  flair[t1==0]<-0
-  writenii(flair, "flair_brain")
-
-  ################################
-  ###### Register T1 to EPI ######
-  ################################
-  t12epi=registration(filename=t1,template.file=epi,typeofTransform="Rigid",
-                     remove.warp=FALSE,outprefix="fun")
-  t1_reg2epi = antsApplyTransforms(fixed = oro2ants(t1), moving = oro2ants(epi),
-            transformlist = t12epi$fwdtransforms, interpolator = "welchWindowedSinc")
-  t1 = ants2oro(t1_reg2epi)
-  writenii(t1, "t1_n4_reg_epi")
 
   #######################################
   ####### Perform skull stripping #######
@@ -91,6 +79,8 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
     t1=fslbet_robust(t1,correct=F)
     # epi=fslbet_robust(epi,correct=F)
     writenii(t1, "t1_brain")
+    flair[t1==0]<-0
+    writenii(flair, "flair_brain")
   }
   mask=(t1!=0)
 
@@ -122,6 +112,19 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
     writenii(probmap, 'mimosa_prob')
     writenii(probmap>0.3, 'mimosa_mask_30')
   }
+
+  ################################
+  ###### Register T1 to EPI ######
+  ################################
+  t12epi=registration(filename=t1,template.file=epi,typeofTransform="Rigid",
+                     remove.warp=FALSE,outprefix="fun")
+  probmap = ants2oro(antsApplyTransforms(fixed = oro2ants(probmap), moving = oro2ants(epi),
+            transformlist = t12epi$fwdtransforms, interpolator = "welchWindowedSinc"))
+  mask = ants2oro(antsApplyTransforms(fixed = oro2ants(mask), moving = oro2ants(epi),
+            transformlist = t12epi$fwdtransforms, interpolator = "welchWindowedSinc"))
+  writenii(probmap, "mimosa_prob_reg_epi")
+  writenii(mask, "mask_reg_epi")
+
   
   ###############################################################
   ####### Split confluent lesions for individual analysis #######
