@@ -61,16 +61,6 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
     writenii(t1, "t1_n4")
     writenii(flair, "flair_n4")
   }
-
-  #######################################
-  ####### Perform skull stripping #######
-  #######################################
-  if(skullstripped==F){
-    t1=fslbet_robust(t1,correct=F)
-    # epi=fslbet_robust(epi,correct=F)
-    writenii(t1, "t1_brain")
-  }
-  mask=(t1!=0)
   
   ####################################
   ####### Register flair to T1 #######
@@ -94,7 +84,17 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
   t1 = ants2oro(t1_reg2epi)
   writenii(t1, "t1_n4_reg_epi")
 
-  epi = epi * t1_reg2epi
+  #######################################
+  ####### Perform skull stripping #######
+  #######################################
+  if(skullstripped==F){
+    t1=fslbet_robust(t1,correct=F)
+    # epi=fslbet_robust(epi,correct=F)
+    writenii(t1, "t1_brain")
+  }
+  mask=(t1!=0)
+
+  epi = epi * mask
   writenii(epi, "epi_brain")
   
   ###########################################
