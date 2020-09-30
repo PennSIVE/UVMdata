@@ -83,9 +83,6 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
     writenii(flair, "flair_brain")
   }
   mask=(t1!=0)
-
-  epi = epi * mask
-  writenii(epi, "epi_brain")
   
   ###########################################
   ####### Perform lesion segmentation #######
@@ -124,6 +121,9 @@ centralveins=function(epi,t1,flair,probmap=NULL,binmap=NULL,parallel=F,
             transformlist = t12epi$fwdtransforms, interpolator = "welchWindowedSinc"))
   writenii(probmap, "mimosa_prob_reg_epi")
   writenii(mask, "mask_reg_epi")
+
+  epi = epi * mask
+  writenii(epi, "epi_brain")
 
   
   ###############################################################
