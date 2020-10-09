@@ -35,10 +35,22 @@ dtboundary<-function(mask) {
   mask[mask>0]<-min.d
   return(mask)
 }
-frangifilter=function(image,mask,radius=1,color="dark",parallel=FALSE,cores=2,
-                c3d=F,min.scale=0.5,max.scale=0.5){
+frangifilter=function(image,mask,radius=1,color="dark",min.scale=0.5,max.scale=0.5){
+    tempinv=tempfile(pattern="file", tmpdir=tempdir(), fileext=".nii.gz")
+    if(color=="dark"){
+      writenii(-1*image,tempinv)
+    }else{
+      writenii(image,tempinv)
+    }
+    tempvein=tempfile(pattern="file", tmpdir=tempdir(), fileext=".nii.gz")
+    system(paste0("c3d ",tempinv," -hessobj 1 ",min.scale," ",max.scale," -oo ",tempvein))
+    veinmask=readnii(tempvein)
+    return(veinmask)
+}
+
+frangifilternoc3d=function(image,mask,radius=1,color="dark",parallel=FALSE,cores=2,
+                min.scale=0.5,max.scale=0.5){
   
-  if(c3d==F){
     eigvals=hessian(image,mask,radius,parallel,cores)
     
     print("Calculating vesselness measure")
@@ -84,22 +96,15 @@ frangifilter=function(image,mask,radius=1,color="dark",parallel=FALSE,cores=2,
       vness[!is.finite(vness)] = 0
     }
     
-    image[mask==1]<-vness
-    return(image)
-  }else{
-    tempinv=tempfile(pattern="file", tmpdir=tempdir(), fileext=".nii.gz")
-    if(color=="dark"){
-      writenii(-1*image,tempinv)
-    }else{
-      writenii(image,tempinv)
-    }
-    tempvein=tempfile(pattern="file", tmpdir=tempdir(), fileext=".nii.gz")
-    system(paste0("c3d ",tempinv," -hessobj 1 ",min.scale," ",max.scale," -oo ",tempvein))
+    #image[mask==1]<-vness
+    #return(image)
     
-    veinmask=readnii(tempvein)
-    return(veinmask)
-  }
+    outimage<-image*0
+    outimage[mask==1]<-vness
+    return(outimage)
 }
+
+
 gradient=function(image,mask=NULL,which="all",radius=1){
   if(radius>=min(dim(image))){stop("Radius larger than smallest image dimension")}
   if(is.nifti(image)){
@@ -263,7 +268,7 @@ hessian=function(image,mask,radius=1,parallel=FALSE,cores=2){
   
   print("Calculating eigenvalues")
   if(parallel==TRUE){
-    result=matrix(unlist(mclapply(biglist,getevals,mc.cores=cores)),
+    result=matrix(unlist(pbmclapply(biglist,getevals,mc.cores=cores)),
                   ncol=3,byrow=T)
   }else if(parallel==FALSE){
     result=matrix(unlist(lapply(biglist,getevals)),ncol=3,byrow=T)
