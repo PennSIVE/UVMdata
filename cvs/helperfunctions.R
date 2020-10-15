@@ -268,7 +268,7 @@ hessian=function(image,mask,radius=1,parallel=FALSE,cores=2){
   
   print("Calculating eigenvalues")
   if(parallel==TRUE){
-    result=matrix(unlist(pbmclapply(biglist,getevals,mc.cores=cores)),
+    result=matrix(unlist(foreach(i=biglist) %dorng% getevals(i)),
                   ncol=3,byrow=T)
   }else if(parallel==FALSE){
     result=matrix(unlist(lapply(biglist,getevals)),ncol=3,byrow=T)
@@ -293,7 +293,7 @@ labelreg=function(fullimage,labelimage,fixedimage,typeofTransform="Rigid",
   return(list(image_reg=ants2oro(imtofix$outfile),label_reg=ants2oro(labtofix)))
 }
 lesioncenters=function(probmap,binmap,minCenterSize=10,radius=1,
-                       parallel=F,cores=2){
+                       parallel=F){
   scale=ceiling((1/mean(probmap@pixdim[2:4]))^3)
   phes=hessian(probmap,mask=binmap,radius,parallel,cores)
   clusmap=ants2oro(labelClusters(oro2ants(binmap),minClusterSize=20*scale))

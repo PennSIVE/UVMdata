@@ -35,8 +35,8 @@ library(extrantsr) # for bias correction, skull-stripping, and registration
 library(mimosa) # for performing lesion segmentation
 library(ANTsRCore) # for cluster labeling
 library(fslr) # for smoothing and tissue class segmentation
-library(parallel) # for working in parallel
-library(pbmcapply) # for working in parallel
+library(doParallel) # for working in parallel
+library(doRNG) # for making parallel computations reproducible
 library(WhiteStripe)
 RNGkind("L'Ecuyer-CMRG")
 source("helperfunctions.R") # load necessary helper functions
@@ -133,6 +133,10 @@ centralveins_seg<-function(epi_n4_brain,t1_reg,flair_n4_brain,brainmask_reg,csf,
 
   print(paste("seed = ", seed))
   set.seed(seed)
+  if (parallel == T) {
+    cl <- makeCluster(cores)
+    registerDoParallel(cl)
+  }
 
   ###########################################
   ####### Perform lesion segmentation #######
@@ -194,7 +198,7 @@ centralveins_seg<-function(epi_n4_brain,t1_reg,flair_n4_brain,brainmask_reg,csf,
   ###############################################################
   ####### Split confluent lesions for individual analysis #######
   ###############################################################
-  les=lesioncenters(probmap,probmap>probthresh,parallel=parallel,cores=cores)$lesioncenters
+  les=lesioncenters(probmap,probmap>probthresh,parallel=parallel)$lesioncenters
     
   ##############################################
   ####### Remove periventricular lesions #######
@@ -243,6 +247,11 @@ centralveins<-function(les_reg,frangi,dtb,parallel=F,cores=2,seed=123){
 
   print(paste("seed = ", seed))
   set.seed(seed)
+
+  if (parallel == T) {
+    cl <- makeCluster(cores)
+    registerDoParallel(cl)
+  }
   
   ######################################################################
   ####### Perform permutation procedure to get CVS probabilities #######
@@ -262,9 +271,7 @@ centralveins<-function(les_reg,frangi,dtb,parallel=F,cores=2,seed=123){
 
     # get 1000 null coherence values for lesion j
     if(parallel==T) {
-      nullscores=as.vector(unlist(mclapply(1:1000,getnulldist,
-                                          centsub,coords,frangsub,
-                                          mc.cores=cores)))
+      nullscores=as.vector(unlist(foreach(i=1:1000) %dorng% getnulldist(i, centsub,coords,frangsub)))
     } else {
       nullscores=as.vector(unlist(lapply(1:1000,getnulldist,centsub,coords,frangsub)))
     }
