@@ -38,13 +38,13 @@ library(fslr) # for smoothing and tissue class segmentation
 library(parallel) # for working in parallel
 library(pbmcapply) # for working in parallel
 library(WhiteStripe)
-
+RNGkind("L'Ecuyer-CMRG")
 source("helperfunctions.R") # load necessary helper functions
 
-centralveins_preproc<-function(epi,t1,flair,skullstripped=F,biascorrected=F){
+centralveins_preproc<-function(epi,t1,flair,skullstripped=F,biascorrected=F,seed=123){
 
-  # print(".Random.seed = ")
-  # print(.Random.seed)
+  print(paste("seed = ", seed))
+  set.seed(seed)
   
   #######################################
   ####### Perform bias correction #######
@@ -69,7 +69,7 @@ centralveins_preproc<-function(epi,t1,flair,skullstripped=F,biascorrected=F){
     writenii(epi_n4_brain, "epi_brain")
     writenii(t1_n4_brain, "t1_brain")
   } else { # assume the T1 is skull-stripped
-    t1_n4_brain<-t1_n4
+    t1_n4_brain<-t1_n4; epi_n4_brain<-epi_n4
     #epi_n4_brain=fslbet_robust(epi_n4,correct=F)
     #writenii(epi_n4_brain, "epi_brain")
   }
@@ -129,7 +129,10 @@ centralveins_preproc<-function(epi,t1,flair,skullstripped=F,biascorrected=F){
 }
 
 
-centralveins_seg<-function(epi_n4_brain,t1_reg,flair_n4_brain,brainmask_reg,csf,flair_to_epi_filename,mimosa_model = mimosa::mimosa_model_No_PD_T2,probmap=NULL,parallel=F,cores=2,probthresh=0.2){
+centralveins_seg<-function(epi_n4_brain,t1_reg,flair_n4_brain,brainmask_reg,csf,flair_to_epi_filename,mimosa_model = mimosa::mimosa_model_No_PD_T2,probmap=NULL,parallel=F,cores=2,probthresh=0.2,seed=123){
+
+  print(paste("seed = ", seed))
+  set.seed(seed)
 
   ###########################################
   ####### Perform lesion segmentation #######
@@ -236,10 +239,10 @@ centralveins_seg<-function(epi_n4_brain,t1_reg,flair_n4_brain,brainmask_reg,csf,
 }
 
 # CVS detection function:
-centralveins<-function(les_reg,frangi,dtb,parallel=F,cores=2){
+centralveins<-function(les_reg,frangi,dtb,parallel=F,cores=2,seed=123){
 
-  # print(".Random.seed = ")
-  # print(.Random.seed)
+  print(paste("seed = ", seed))
+  set.seed(seed)
   
   ######################################################################
   ####### Perform permutation procedure to get CVS probabilities #######
