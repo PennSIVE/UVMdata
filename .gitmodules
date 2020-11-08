@@ -1,0 +1,3 @@
+[submodule "group2"]
+	path = group2
+	url = ./group2
