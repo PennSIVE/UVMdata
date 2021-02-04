@@ -6,3 +6,7 @@
 	path = nifti
 	url = ./nifti
 	datalad-id = eabb6b47-da87-46dc-8291-91c41cb78402
+[submodule "simg"]
+	path = simg
+	url = ./simg
+	datalad-id = bf1f7f07-cb78-4e76-b013-c5ad12c92cc7
