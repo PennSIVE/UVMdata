@@ -2,3 +2,7 @@
 	path = sourcedata
 	url = ./sourcedata
 	datalad-id = d7796b62-c7f0-4ca9-a89a-5b62a22ca628
+[submodule "nifti"]
+	path = nifti
+	url = ./nifti
+	datalad-id = eabb6b47-da87-46dc-8291-91c41cb78402
