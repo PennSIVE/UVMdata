@@ -10,3 +10,7 @@
 	path = simg
 	url = ./simg
 	datalad-id = bf1f7f07-cb78-4e76-b013-c5ad12c92cc7
+[submodule "fmriprep"]
+	path = fmriprep
+	url = ./fmriprep
+	datalad-id = a2ad7202-9fa7-46f3-8712-7d3debe0bc44
