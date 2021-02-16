@@ -18,3 +18,7 @@
 	path = licenses
 	url = ./licenses
 	datalad-id = a2c80408-686c-4a42-a0c1-3d7c81b26e26
+[submodule "templateflow"]
+	path = templateflow
+	url = ./templateflow
+	datalad-id = 75d7312f-0285-4bbf-b191-c2f656cebc02
