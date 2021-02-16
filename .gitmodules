@@ -34,3 +34,7 @@
 	path = lesmasks
 	url = ./lesmasks
 	datalad-id = 15b18bb1-eea0-418c-8c1f-52706e26805b
+[submodule "flirt"]
+	path = flirt
+	url = ./flirt
+	datalad-id = 942436a0-6593-4330-9ada-78cecc07568c
