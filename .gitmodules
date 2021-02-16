@@ -14,3 +14,7 @@
 	path = fmriprep
 	url = ./fmriprep
 	datalad-id = a2ad7202-9fa7-46f3-8712-7d3debe0bc44
+[submodule "licenses"]
+	path = licenses
+	url = ./licenses
+	datalad-id = a2c80408-686c-4a42-a0c1-3d7c81b26e26
