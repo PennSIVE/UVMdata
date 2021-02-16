@@ -50,7 +50,7 @@ def infotodict(seqinfo):
         * image_type
         """
         protocol_name = s.protocol_name.upper().replace(' ', '')
-        if 'MPRAXFLAIR' in protocol_name:
+        if 'FLAIR' in protocol_name and 'MPR' not in protocol_name:
             info[flair].append(s.series_id)
         elif '3D_T1_MPRAGE' in protocol_name:
             info[t1w].append(s.series_id)
