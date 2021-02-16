@@ -26,3 +26,7 @@
 	path = preprocessed
 	url = ./preprocessed
 	datalad-id = ae76ca0d-9dcd-43e2-aab0-446ca68d2c4c
+[submodule "mimosa"]
+	path = mimosa
+	url = ./mimosa
+	datalad-id = c84a01f4-e7c6-4103-b1a9-246a73cdad2f
