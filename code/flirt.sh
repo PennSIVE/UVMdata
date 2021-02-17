@@ -56,10 +56,10 @@ datalad run -i "nifti/sub-${sub}" -i "mimosa/sub-${sub}" -i "simg/mimosa_latest.
     flirt -in $PWD/mimosa/sub-${sub}/mimosa_binary_mask_0.2.nii.gz \
     -ref $PWD/nifti/sub-${sub}/ses-01/anat/sub-${sub}_ses-01_run-001_part-phase_T2star_UNWRAPPED_lpi.nii.gz \
     -out $PWD/flirt/sub-${sub}/sub-${sub}_lesmask_r2_phasecorlpi.nii.gz \
-    -init $PWD/nifti/sub-${sub}_t1_r2_phasecorlpi.mat \
+    -init $PWD/flirt/sub-${sub}/sub-${sub}_t1_r2_phasecorlpi.mat \
     -applyxfm \
     -interp nearestneighbour
-​
+
 
 
 # selectively push outputs only
