@@ -38,3 +38,7 @@
 	path = flirt
 	url = ./flirt
 	datalad-id = 942436a0-6593-4330-9ada-78cecc07568c
+[submodule "thalamus"]
+	path = thalamus
+	url = ./thalamus
+	datalad-id = f987c182-dbb9-4833-9845-89188855a395
