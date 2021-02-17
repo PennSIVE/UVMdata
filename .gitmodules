@@ -42,3 +42,7 @@
 	path = thalamus
 	url = ./thalamus
 	datalad-id = f987c182-dbb9-4833-9845-89188855a395
+[submodule "cvs"]
+	path = cvs
+	url = ./cvs
+	datalad-id = ec632da9-ae28-497e-83d7-97988648939f
