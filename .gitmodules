@@ -46,3 +46,7 @@
 	path = cvs
 	url = ./cvs
 	datalad-id = ec632da9-ae28-497e-83d7-97988648939f
+[submodule "results"]
+	path = results
+	url = ./results
+	datalad-id = 255fd5bc-fa4a-4978-855f-5d3fa46f353e
