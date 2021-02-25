@@ -1,3 +1,4 @@
+set.seed(123, kind = "L'Ecuyer-CMRG")
 source("centralveins.R")
 library(neurobase)
 load("/models/mimosa_model.RData")
@@ -20,8 +21,8 @@ flair_n4_brain = readnii('flair_brain.nii.gz')
 brainmask_reg = readnii('brainmask_reg_flair.nii.gz')
 csf = readnii('csf.nii.gz')
 flair_to_epi_filename = 'flair_to_epi'
-centralveins_seg(epi_n4_brain, t1_reg, flair_n4_brain, brainmask_reg, csf, flair_to_epi_filename, mimosa_model = mimosa_model, probmap = NULL, parallel = T, cores = as.numeric(Sys.getenv("NSLOTS")), probthresh = 0.2)
+centralveins_seg(epi_n4_brain, t1_reg, flair_n4_brain, brainmask_reg, csf, flair_to_epi_filename, mimosa_model = mimosa_model, probmap = NULL, parallel = F, cores = as.numeric(Sys.getenv("NSLOTS")), probthresh = 0.2)
 
-result = centralveins(readnii("les_reg.nii.gz"), readnii("frangi.nii.gz"), readnii("dtb.nii.gz"), parallel = T, cores = as.numeric(Sys.getenv("NSLOTS")))
+result = centralveins(readnii("les_reg.nii.gz"), readnii("frangi.nii.gz"), readnii("dtb.nii.gz"), parallel = F, cores = as.numeric(Sys.getenv("NSLOTS")))
 
 saveRDS(result, file = "centralveins")

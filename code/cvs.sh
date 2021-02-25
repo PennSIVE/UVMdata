@@ -34,6 +34,8 @@ git -C cvs/sub-$sub checkout -b "sub-${sub}"
 
 # yay time to run
 export SINGULARITYENV_NSLOTS=$LSB_DJOB_NUMPROC
+export SINGULARITYENV_ITK_GLOBAL_DEFAULT_NUMBER_OF_THREADS=$LSB_DJOB_NUMPROC
+export SINGULARITYENV_ANTS_RANDOM_SEED=123
 datalad run -i nifti/sub-$sub -i simg/mimosa_latest.sif -o cvs/sub-$sub \
     singularity exec --cleanenv --pwd $PWD/code/cvs \
     -B $TMPDIR -B $PWD/cvs/sub-$sub:/out \
